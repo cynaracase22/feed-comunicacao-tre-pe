@@ -24,12 +24,19 @@ ARQUIVO_SAIDA = os.path.join(os.path.dirname(__file__), "..", "docs", "comunicac
 MAX_ITENS = 10
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; GeradorFeedTREPE/1.0)"
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
 }
 
 
 def buscar_pagina():
-    resposta = requests.get(URL_PAGINA, headers=HEADERS, timeout=15)
+    sessao = requests.Session()
+    sessao.headers.update(HEADERS)
+    resposta = sessao.get(URL_PAGINA, timeout=15)
     resposta.raise_for_status()
     return resposta.text
 
