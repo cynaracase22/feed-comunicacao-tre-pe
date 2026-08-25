@@ -1,0 +1,35 @@
+name: Atualizar feed RSS Comunicação TRE-PE
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Gerar feed
+        run: python scripts/gerar_feed_comunicacao.py
+
+      - name: Publicar mudanças (se houver)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/comunicacao-tre-pe.xml
+          git diff --staged --quiet || git commit -m "Atualiza feed RSS automaticamente"
+          git push
